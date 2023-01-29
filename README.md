@@ -11,6 +11,7 @@ Make sure `node js` is installed on your system.
 `git clone https://github.com/nforleo/forleo-course-project.git`
 
 2. Go into repo and install packages:<br>
+`cd forleo-course-project`<br>
 `npm install`
 
 3. Start application:<br>
