@@ -1,60 +1,100 @@
-import { ChangeEventHandler, useCallback, useState } from "react";
-import { Dropdown, Form } from "react-bootstrap";
+import { useState } from "react";
 import styled from "styled-components";
+import { searchByTextQuery } from "../apiQueries";
 import { AppLogo } from "./Logo";
+import { SearchBar } from "./SearchBar";
 
 const HomeScreenStyle = styled.div`
     width: 100%;
     height: 100%;
     background-image: linear-gradient(black, gray);
+    padding: 1rem;
 
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  
   
 `;
 
-export function HomeScreen () {
-  const [text, setText] = useState<string>("");
+const TableContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  column-gap: 1em;
 
-  const onChange = useCallback<ChangeEventHandler<HTMLInputElement>>((e) => {
-    setText(e.target.value);
-  }, []);
+  #artist-table, #track-table {
+    display: flex;
+    flex-direction: column;
+    width: 18em;
+
+    label {
+      align-self: center;
+    }
+  }
+`;
+
+export function HomeScreen (props: {accessToken: string}) {
+  const { accessToken } = props;
+
+  const [text, setText] = useState<string>("");
+  const [loadedData, setLoadedData] = useState<boolean>(false);
+  const [showArtistDetails, setShowArtistDetails] = useState<boolean>(false);
+  const [showTrackDetails, setShowTrackDetails] = useState<boolean>(false);
+  
+  const [artists, setArtists] = useState<any[]>([]);
+  const [tracks, setTracks] = useState<any[]>([]);
+  
+
+  const searchByText = async () => {
+    console.log("Text:", text);
+    setShowArtistDetails(false);
+    setShowTrackDetails(false);
+
+    const [artistsRes, tracksRes] = await Promise.all([
+      searchByTextQuery(accessToken, text, "artist"),
+      searchByTextQuery(accessToken, text, "track")
+    ]);    
+    console.log({artistsRes, tracksRes});
+
+    setArtists(artistsRes.artists.items);
+    setTracks(tracksRes.tracks.items);
+    setLoadedData(true);
+  };
+
+  const showOptions = () => {
+    return showArtistDetails || showTrackDetails;
+  }
+
+
 
   return  (<HomeScreenStyle>
-        <AppLogo />
-        <p>Begin searching for a song or arist</p>
-        <Dropdown>
-          <Dropdown.Toggle 
-            as={Form.Control}
-            onChange={onChange}
-            value={text}
-          />
-          {text.length < 3 ? null : (<Dropdown.Menu>
-            <Dropdown.Header>Songs</Dropdown.Header>
-            <Dropdown.Item>
-              Song 1
-            </Dropdown.Item>
-            <Dropdown.Item>
-              Song 2
-            </Dropdown.Item>
-            <Dropdown.Item>
-              Song 3
-            </Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Header>Artists</Dropdown.Header>
-            <Dropdown.Item>
-              Artist 1
-            </Dropdown.Item>
-            <Dropdown.Item>
-              Artist 2
-            </Dropdown.Item>
-            <Dropdown.Item>
-              Artist 3
-            </Dropdown.Item>
-          </Dropdown.Menu>) }
-        </Dropdown>
+
+        {!loadedData && <div>
+          <AppLogo />
+          <p>Begin searching for a song or arist</p>
+        </div>}
+        
+        
+        <SearchBar setText={setText} text={text} searchByText={searchByText}/>
+
+        {loadedData && !showOptions() &&
+          <TableContainer>
+            <div id="artist-table">
+              <label>Artists</label>
+              {artists.map((e) => {
+                  return (<button key={e.id} onClick={() => setShowArtistDetails((prev) => !prev)}>
+                    {e.name}
+                  </button>)
+              })}
+            </div>
+            <div id="track-table">
+              <label>Tracks</label>
+              {tracks.map((e) => {
+                  return (<button key={e.id} onClick={() => setShowTrackDetails((prev) => !prev)}>
+                    {e.name}
+                  </button>)
+              })}
+            </div>
+          </TableContainer>}
     </HomeScreenStyle>)
 }
