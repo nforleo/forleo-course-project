@@ -1,29 +1,28 @@
+/**
+ * Gets valid Spotify access token to use in the rest of the application.
+ */
 import React, { useEffect, useState } from 'react';
+import { getAccessToken } from './apiQueries';
 import './App.css';
 import { HomeScreen } from './components/Home';
 
-
-const CLIENT_ID = '201cf375de154206b36313c9ac81b524';
-const CLIENT_SECRET = 'a3ab60e16865423cbdcdc14a5f513295';
-
-
+/**
+ * Render HomeScreen and pass in accessToken
+ * @returns 
+ */
 function App() {
 
   const [accessToken, setAccessToken] = useState<string>("");
 
   useEffect(() => {
-    const auth = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: "grant_type=client_credentials&client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET
-    };
-
-    fetch('https://accounts.spotify.com/api/token', auth).then((res) => {
-      return res.json();
-    }).then((data) => {
+    // On load of this component, make call to get Spotify access token
+    getAccessToken()
+    .then((data) => {
       setAccessToken(data.access_token);
+      // setAccessToken("error")
+    })
+    .catch(() => {
+      setAccessToken("error")
     });
   }, []);
 
