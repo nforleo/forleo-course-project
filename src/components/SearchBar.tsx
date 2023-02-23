@@ -37,7 +37,15 @@ export function SearchBar (props: {text: string, setText: (a: string) => void, s
    * Update display value of search box
    */
   const onChange = useCallback<ChangeEventHandler<HTMLInputElement>>((e) => {
+    // Explicitlly allow most characters (want to block: `{} and any other untested character)
+    const alphaNum = /^[a-zA-Z0-9 _\-=+()*&^%$#~@.!,;:"-?/']+$/;
     const str = e.target.value; 
+
+
+    if (str && !alphaNum.test(str)) {
+      return;
+    }
+    
     setText(str);
   }, [setText]);
 

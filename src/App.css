@@ -3,3 +3,7 @@ html, body, main {
     margin: unset;
     color: white;
 }
+
+a {
+    color: white !important;
+}

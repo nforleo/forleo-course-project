@@ -1,9 +1,5 @@
 /**
  * This file holds all of the API requests.
- *  The spotify API is too good and the free text search endpoint (searchByTextQuery) happens to return 
- *  very similar data for artists and tracks that the respective endpoint for each specific one would return. 
- *  I would/should use this data, however I will make a call to endpoint to show how using data received 
- *  from one endpoint can be used to call another.
  */
 
 // In an ideal world, these would not be visible
@@ -62,9 +58,8 @@ export const searchByTextQuery = async (accessToken: string, searchStr: string, 
     return r.json();
 }
 
-
-export const searchForTrackOrArtistById = async (accessToken: string, id: string, type: RequestType, ) => {
-    const r = await fetch(`${baseUrl}/${type}s/${id}`, {
+export const getTrackAudioFeature = async (accessToken: string, id: string) => {
+    const r = await fetch (`${baseUrl}/audio-features/${id}`, {
         method: "GET",
         headers: new Headers({
             "Content-Type": "application/json",
@@ -72,7 +67,32 @@ export const searchForTrackOrArtistById = async (accessToken: string, id: string
         })
     });
 
-    
+    checkForErrors(r);
+    return r.json();
+}
+
+export const getArtistTopTracks = async (accessToken: string, id: string) => {
+    const r = await fetch (`${baseUrl}/artists/${id}/top-tracks?market=US`, {
+        method: "GET",
+        headers: new Headers({
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + accessToken
+        })
+    });
+
+    checkForErrors(r);
+    return r.json();
+}
+
+export const getArtistTopAlbums = async (accessToken: string, id: string) => {
+    const r = await fetch(`${baseUrl}/artists/${id}/albums?market=US`, {
+        method: "GET",
+        headers: new Headers({
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + accessToken
+        })
+    });
+
     checkForErrors(r);
     return r.json();
 }

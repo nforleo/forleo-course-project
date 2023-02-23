@@ -1,7 +1,11 @@
+/**
+ * This is the Parent page for the application. Contains most of the logic that 
+ *  is required for use in child pages since this is a Single Page Application (SPA)
+ */
 import { ReasonPhrases } from "http-status-codes";
 import { useState } from "react";
 import styled from "styled-components";
-import { searchByTextQuery, searchForTrackOrArtistById } from "../apiQueries";
+import { searchByTextQuery } from "../apiQueries";
 import { ArtistDetails } from "./ArtistDetails";
 import { AppLogo } from "./Logo";
 import { SearchBar } from "./SearchBar";
@@ -86,8 +90,7 @@ export function HomeScreen (props: {accessToken: string}) {
       setLoadedData(true);
     }).catch((err) => {
       console.error(err);
-
-      setStatus(err);
+      setStatus(err.message);
     });
   };
 
@@ -99,12 +102,12 @@ export function HomeScreen (props: {accessToken: string}) {
     return selectedTrackOrArtist;
   }
 
+  /**
+   * Save track or artist so that the details can be rendered
+   * @param selection artist or track
+   */
   const onSelectTrackOrArtist = (selection) => {
-    searchForTrackOrArtistById(accessToken, selection.id, selection.type).then((res) => {
-      setSelectedTrackOrArtist(res);
-    }).catch(() => {
-      setStatus("failed");
-    });
+    setSelectedTrackOrArtist(selection);
   }
 
   return  (
@@ -142,9 +145,9 @@ export function HomeScreen (props: {accessToken: string}) {
       ) : 
         selectedTrackOrArtist ? (
           selectedTrackOrArtist.type === "track" ? (
-            <TrackDetails track={selectedTrackOrArtist} />
+            <TrackDetails track={selectedTrackOrArtist} accessToken={accessToken}/>
           ) : selectedTrackOrArtist.type === "artist" ? (
-            <ArtistDetails artist={selectedTrackOrArtist} />
+            <ArtistDetails artist={selectedTrackOrArtist} accessToken={accessToken}/>
           ) : (
             <div>
               Something went wrong when selecting a track or artist. Please search again.
