@@ -1,3 +1,6 @@
+/**
+ * Styling used in more than 1 place
+ */
 import styled from "styled-components";
 
 export const DetailsStyle = styled.div`

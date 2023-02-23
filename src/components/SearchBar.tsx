@@ -1,3 +1,6 @@
+/**
+ * Render the search bar component
+ */
 import styled from "styled-components";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { ChangeEventHandler, useCallback } from "react";
@@ -12,7 +15,7 @@ const SearchBarStyle = styled.div`
 `;
 
 /**
- * Render Serach bar and handle logic that only affects search bar
+ * Render Search bar and handle logic that only affects search bar
  * @param props {
  *  text: value to search with
  *  setText: function to set text
@@ -37,7 +40,7 @@ export function SearchBar (props: {text: string, setText: (a: string) => void, s
    * Update display value of search box
    */
   const onChange = useCallback<ChangeEventHandler<HTMLInputElement>>((e) => {
-    // Explicitlly allow most characters (want to block: `{} and any other untested character)
+    // Explicitly allow most characters (want to block: `{} and any other untested character)
     const alphaNum = /^[a-zA-Z0-9 _\-=+()*&^%$#~@.!,;:"-?/']+$/;
     const str = e.target.value; 
 

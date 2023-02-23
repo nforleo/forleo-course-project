@@ -1,10 +1,17 @@
+/**
+ * Render Track Details page
+ */
 import { useEffect, useState } from "react";
 import { getTrackAudioFeature } from "../apiQueries";
 import { DetailsStyle, ImageContainer } from "../common";
 import { ReasonPhrases } from "http-status-codes";
 
 
-
+/**
+ * Handle logic and rendering of the Track Information
+ * @param props {track: object of song, accessToken: spotify auth token}
+ * @returns 
+ */
 export function TrackDetails (props: {track: any, accessToken: string}) {
     const { track, accessToken } = props;
 
@@ -12,8 +19,8 @@ export function TrackDetails (props: {track: any, accessToken: string}) {
     const [status, setStatus] = useState<string | undefined>();
 
     useEffect(()=> {
+        // Get features of the track from Spotify, pass in auth token and UUID for track
         getTrackAudioFeature(accessToken, track.id).then((features) => {
-            console.log(features);
             setFeatures(features);
             setStatus(ReasonPhrases.OK);
         }).catch((err) => {

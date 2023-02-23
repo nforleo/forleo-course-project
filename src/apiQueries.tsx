@@ -23,7 +23,7 @@ const checkForErrors = (r) => {
 
 /**
  * Get the authentication token from spotify for the application
- * @returns 
+ * @returns spotify auth token
  */
 export const getAccessToken = async () => {
     const r = await fetch('https://accounts.spotify.com/api/token', {
@@ -40,10 +40,10 @@ export const getAccessToken = async () => {
 
 /**
  * Returns the Top 5 results matching the search string for either artists or tracks
- * @param accessToken 
- * @param searchStr 
- * @param type 
- * @returns 
+ * @param accessToken spotify auth token
+ * @param searchStr string to search tracks/artist for
+ * @param type "artist" | "track"
+ * @returns 5 artists or 5 tracks
  */
 export const searchByTextQuery = async (accessToken: string, searchStr: string, type: RequestType) => {
     const r = await fetch(`${baseUrl}/search?q=${type}:${searchStr}&type=${type}&limit=5`, {
@@ -58,6 +58,13 @@ export const searchByTextQuery = async (accessToken: string, searchStr: string, 
     return r.json();
 }
 
+
+/**
+ * Get features of the track by track.id (Danceability, Tempo, etc...)
+ * @param accessToken spotify auth token
+ * @param id UUID of track
+ * @returns audio features of selected track
+ */
 export const getTrackAudioFeature = async (accessToken: string, id: string) => {
     const r = await fetch (`${baseUrl}/audio-features/${id}`, {
         method: "GET",
@@ -71,6 +78,12 @@ export const getTrackAudioFeature = async (accessToken: string, id: string) => {
     return r.json();
 }
 
+/**
+ * Get artist's top tracks by artist UUID (can't pass a limit to query, so need to handle that when the data is returned)
+ * @param accessToken spotify auth token
+ * @param id UUID of track
+ * @returns artist's rop tracks
+ */
 export const getArtistTopTracks = async (accessToken: string, id: string) => {
     const r = await fetch (`${baseUrl}/artists/${id}/top-tracks?market=US`, {
         method: "GET",
@@ -84,6 +97,12 @@ export const getArtistTopTracks = async (accessToken: string, id: string) => {
     return r.json();
 }
 
+/**
+ * Get artist's top albums by UUID of arist
+ * @param accessToken spotify auth token
+ * @param id UUID of track
+ * @returns artist's top albums
+ */
 export const getArtistTopAlbums = async (accessToken: string, id: string) => {
     const r = await fetch(`${baseUrl}/artists/${id}/albums?market=US`, {
         method: "GET",
