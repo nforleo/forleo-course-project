@@ -72,7 +72,6 @@ export function HomeScreen (props: {accessToken: string}) {
    * Call API endpoint function here. Sends token, search string, and type (artist or track) to the request.
    */
   const searchByText = async () => {
-    console.log("Text:", text);
     setSelectedTrackOrArtist(undefined);
     setStatus(ReasonPhrases.OK);
 
@@ -83,13 +82,10 @@ export function HomeScreen (props: {accessToken: string}) {
       searchByTextQuery(accessToken, text, "track")
     ])
     .then(([artistsRes, tracksRes]) => {
-      console.log({ artistsRes, tracksRes});
-
       setArtists(artistsRes.artists.items);
       setTracks(tracksRes.tracks.items);
       setLoadedData(true);
     }).catch((err) => {
-      console.error(err);
       setStatus(err.message);
     });
   };

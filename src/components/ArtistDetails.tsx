@@ -21,24 +21,18 @@ export function ArtistDetails (props: {artist: any, accessToken: string}) {
     const [status, setStatus] = useState<string | undefined>();
 
     useEffect(() => {
-        console.log("Selected Artist:", artist);
-
         // Wait for reponse from both queries
         Promise.all([
             getArtistTopTracks(accessToken, artist.id),
             getArtistTopAlbums(accessToken, artist.id)
         ]).then(([tracks, albums]) => {
-            console.log({albums, tracks: tracks.tracks});
-
             const fiveAlbums = getFiveAlbums(albums.items);
-            console.log("Five Albums", fiveAlbums);
 
             // Save responses
             setTracks(tracks.tracks);
             setAlbums(fiveAlbums);
             setStatus(ReasonPhrases.OK);
         }).catch((err) => {
-            console.error(err)
             setStatus(err.message);
         });
 
