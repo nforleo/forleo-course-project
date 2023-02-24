@@ -18,6 +18,9 @@ Make sure an up-to-date version of `node js` is installed on your system.
 3. Start application:<br>
 `npm start`
 
+## Using the application
+- You must enter atleast 3 characters in search bar (increase accuracy of search results)
+
 ## Possible issues
 1.  If there is an issue retrieving an authentication token on load, try using a private browser.
 
